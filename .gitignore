@@ -1,0 +1,35 @@
+# ビルドファイルや依存関係のキャッシュなどの一時ファイルを無視する
+/dist/
+/node_modules/
+
+# 環境変数や秘密情報などの機密データを無視する
+.env
+.env.local
+.env.*.local
+
+# ログファイルやデバッグ情報を無視する
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+debug.log
+.vscode/
+
+# プロジェクト固有の設定ファイルを無視する
+.idea/
+.vscode/
+
+# ビルドツールやパッケージマネージャのキャッシュを無視する
+.npm/
+.pnpm/
+.yarn/
+
+# ローカル開発サーバーの設定ファイルを無視する
+.vite/
+
+# テスト結果やカバレッジレポートを無視する
+/coverage/
+
+# その他の一時ファイルやキャッシュを無視する
+*.log
+*.swp
+.DS_Store
