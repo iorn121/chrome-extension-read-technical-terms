@@ -1,22 +1,68 @@
-const article = document.querySelector("article");
+// dictionaryの型定義
+type Dictionary = {
+  [key: string]: string;
+};
 
-// `document.querySelector` may return null if the selector doesn't match anything.
-if (article) {
-  const text = article.textContent;
-  const wordMatchRegExp = /[^\s]+/g; // Regular expression
-  const words = text!.matchAll(wordMatchRegExp);
-  // matchAll returns an iterator, convert to array to get word count
-  const wordCount = [...words].length;
-  const readingTime = Math.round(wordCount / 200);
-  const badge = document.createElement("p");
-  // Use the same styling as the publish information in an article's header
-  badge.classList.add("color-secondary-text", "type--caption");
-  badge.textContent = `⏱️ ${readingTime} min read`;
+// テクニカルタームとその読み方をマッピングした辞書
+const dictionary: Dictionary = {
+  qiita: "キータ",
+  vite: "ヴィート",
+  vue: "ビュー",
+  angular: "アングラー",
+  svelte: "スベルト",
+  python: "パイソン",
+  rust: "ラスト",
+  kotlin: "コトリン",
+  gif: "ジフ",
+  exe: "エグゼ",
+  ieee: "アイエトリプルイー",
+  kubernetes: "クーバネティス",
+  awk: "オーク",
+  lambda: "ラムダ",
+  nginx: "エンジンエックス",
+  postgresql: "ポストグレスキューエル",
+  jupyter: "ジュパイター",
+  laravel: "ララベル",
+  yarn: "ヤーン",
+  apach: "アパッチ",
+  cache: "キャッシュ",
+  arch: "アーチ",
+  auth: "オース",
+  bios: "バイオス",
+  zsh: "ジーシェル",
+  cidr: "サイダー",
+  column: "カラム",
+  csrf: "シーサーフ",
+  ddos: "ディードス",
+};
 
-  // Support for API reference docs
-  const heading = article.querySelector("h1");
-  // Support for article docs with date
-  const date = article.querySelector("time")?.parentNode;
-
-  ((date ?? heading) as Element).insertAdjacentElement("afterend", badge);
+// DOMツリーを再帰的に探索し、テクニカルタームをルビ注釈付きに置換する関数
+export function walk(node: HTMLElement | ChildNode) {
+  // ノードがHTMLElementの場合
+  if (node instanceof HTMLElement) {
+    // 辞書の各エントリーについて処理
+    for (const term in dictionary) {
+      // 正規表現を作成（大文字小文字を区別しない）
+      const regex = new RegExp(`(${term})`, "gi");
+      // ノードのテキスト内容が存在し、テクニカルタームを含む場合
+      if (node.textContent && regex.test(node.textContent)) {
+        // ルビ注釈のテキストを取得
+        const rubyText = dictionary[term];
+        // テクニカルタームをルビ注釈付きに置換
+        node.innerHTML = node.innerHTML.replace(
+          regex,
+          (match) => `<ruby>${match}<rt>${rubyText}</rt></ruby>`
+        );
+      }
+    }
+  } else {
+    // ノードがHTMLElementでない場合
+    // 子ノードを再帰的に探索
+    for (let i = 0; i < node.childNodes.length; i++) {
+      walk(node.childNodes[i] as HTMLElement);
+    }
+  }
 }
+
+// body要素から探索を開始
+walk(document.body);
